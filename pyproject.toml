@@ -1,0 +1,16 @@
+[project]
+name = "selfstorage"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django~=5.2.10",
+    "django-debug-toolbar>=6.2.0",
+    "django-environ>=0.12.1",
+    "django-phonenumber-field>=8.4.0",
+    "environs>=14.5.0",
+    "gunicorn>=25.1.0",
+    "pillow>=12.1.1",
+    "psycopg2-binary>=2.9.11",
+]
