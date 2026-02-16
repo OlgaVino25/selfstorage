@@ -6,12 +6,15 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("main.urls")),
-    path("boxes/", include("warehouses.urls")),
     path("account/", include("accounts.urls")),
+    path("client/", include("client.urls")),
+    path("consultation/", include("consultation.urls")),
+    path("", include("main.urls")),
     path("promotions/", include("promotions.urls")),
     path("rent/", include("rent.urls")),
     path("services/", include("services.urls")),
+    path("warehouses/", include("warehouses.urls")),
+    path("boxes/", include("warehouses.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
