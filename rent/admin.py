@@ -11,6 +11,7 @@ class RentAdmin(admin.ModelAdmin):
         "end_date",
         "deposit",
         "promo_code",
+        "total_price",
         "is_active",
         "created_at",
     )
@@ -27,3 +28,4 @@ class RentAdmin(admin.ModelAdmin):
         "box__number",
         "box__warehouse__name",
     )
+    readonly_fields = ("total_price",)

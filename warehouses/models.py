@@ -4,7 +4,9 @@ from django.db import models
 class Warehouse(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название склада")
     address = models.CharField(max_length=255, verbose_name="Адрес")
-    image = models.ImageField(upload_to="warehouses/", verbose_name="Изображение")
+    image = models.ImageField(
+        upload_to="warehouses/", blank=True, null=True, verbose_name="Изображение"
+    )
     temperature = models.DecimalField(
         max_digits=3, decimal_places=1, verbose_name="Температура"
     )
@@ -16,6 +18,13 @@ class Warehouse(models.Model):
     how_to_reach = models.TextField(blank=True, verbose_name="Как добраться")
     has_parking = models.BooleanField(default=False, verbose_name="Есть парковка")
     near_subway = models.BooleanField(default=False, verbose_name="Рядом с метро")
+    rate_per_cubic_meter = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        verbose_name="Ставка за м³ в месяц",
+        default=0,
+        help_text="Цена за 1 кубический метр в месяц",
+    )
 
     class Meta:
         verbose_name = "Склад"
@@ -48,19 +57,34 @@ class Box(models.Model):
         blank=True,
         verbose_name="Категория размера",
     )
+    length = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Длина (м)"
+    )
+    width = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Ширина (м)"
+    )
+    height = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Высота (м)"
+    )
 
     class Meta:
         verbose_name = "Бокс"
         verbose_name_plural = "Боксы"
 
     def save(self, *args, **kwargs):
-        # Автоматически проставляем size_category на основе площади
+        volume = self.length * self.width * self.height
+        if self.warehouse:
+            self.price_per_month = volume * self.warehouse.rate_per_cubic_meter
+        else:
+            self.price_per_month = 0
+
         if self.area <= 3:
             self.size_category = "small"
         elif self.area <= 10:
             self.size_category = "medium"
         else:
             self.size_category = "large"
+
         super().save(*args, **kwargs)
 
     def __str__(self):

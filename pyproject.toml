@@ -8,6 +8,7 @@ dependencies = [
     "django~=5.2.10",
     "django-debug-toolbar>=6.2.0",
     "django-environ>=0.12.1",
+    "django-livereload-server>=0.5.1",
     "django-phonenumber-field>=8.4.0",
     "environs>=14.5.0",
     "gunicorn>=25.1.0",

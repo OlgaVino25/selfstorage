@@ -16,7 +16,7 @@ class PromoCode(models.Model):
         return self.is_active and self.valid_from <= now <= self.valid_to
 
     def __str__(self):
-        return f"{self.code} - {self.description}"
+        return self.code
 
     class Meta:
         verbose_name = "Промокод"
