@@ -36,13 +36,13 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbar">
           <ul class="navbar-nav">
             <li class="nav-item me-5">
-              <a class="nav-link SelfStorage_black" href="#">Рассчитать стоимость</a>
+              <a class="nav-link SelfStorage_black" href="{% url 'boxes' %}">Рассчитать стоимость</a>
             </li>
             <li class="nav-item me-5">
-              <a class="nav-link SelfStorage_black" href="#">Правила хранения</a>
+              <a class="nav-link SelfStorage_black" href="{% url 'faq' %}">Правила хранения</a>
             </li>
             <li class="nav-item me-5">
-              <a class="nav-link SelfStorage_black" href="#">Арендовать бокс</a>
+              <a class="nav-link SelfStorage_black" href="{% url 'boxes' %}">Арендовать бокс</a>
             </li>
             <li class="nav-item d-flex align-items-center">
               <div
@@ -159,7 +159,7 @@
               />
               <span class="fw-light SelfStorage_grey">
                 Нажимая на кнопку, вы подтверждаете свое
-                <a href="#" class="SelfStorage_grey">согласие на обработку персональных данных</a>
+                <a href="{% static 'privacy_policy_template.pdf' %}" target="_blank" class="SelfStorage_grey">согласие на обработку персональных данных</a>
               </span>
               <button
                 class="btn border-8 py-3 px-5 mt-5 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange"
@@ -228,7 +228,7 @@
     <footer class="container py-5">
       <div class="row mb-5">
         <div class="col-6 col-md-4 d-flex flex-column mb-3">
-          <a href="#" class="navbar-brand">
+          <a href="{% url 'index' %}" class="navbar-brand">
             <img src="{% static 'img/Vector.svg' %}" alt="[]" />
             <img src="{% static 'img/SelfStorage.svg' %}" alt="SelfStorage" />
           </a>
@@ -261,19 +261,19 @@
       </div>
       <div class="row">
         <div class="col-6 col-md-4 d-flex flex-column">
-          <p><a href="#" class="link-dark text-decoration-none">Тарифы</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Рассчитать стоимость</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Арендовать бокс</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Тарифы</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Рассчитать стоимость</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Арендовать бокс</a></p>
         </div>
         <div class="col-6 col-md-4 d-flex flex-column">
-          <p><a href="#" class="link-dark text-decoration-none">Правила хранения</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Адреса складов</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Отзывы</a></p>
+          <p><a href="{% url 'faq' %}" class="link-dark text-decoration-none">Правила хранения</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Адреса складов</a></p>
+          <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Отзывы</a></p>
         </div>
         <div class="col-6 col-md-4 d-flex flex-column">
           <p><a href="#" class="link-dark text-decoration-none">Политика конфиденциальности</a></p>
           <p><a href="#" class="link-dark text-decoration-none">Правовые документы</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Контакты</a></p>
+          <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Контакты</a></p>
         </div>
         <h6 class="SelfStorage_grey text-center mt-5">
           © 2022 SelfStorage. Использование материалов запрещено без письменного согласия

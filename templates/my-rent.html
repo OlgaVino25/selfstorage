@@ -57,7 +57,7 @@
               <b>8 (800) 000-00-00</b>
             </li>
             <li class="nav-item me-5">
-              <a class="nav-link SelfStorage_black" href="#">Рассчитать стоимость</a>
+              <a class="nav-link SelfStorage_black" href="{% url 'boxes' %}">Рассчитать стоимость</a>
             </li>
             <li class="nav-item me-5">
               <a class="nav-link SelfStorage_black" href="{% url 'faq' %}">Правила хранения</a>
@@ -251,7 +251,7 @@
                     Открыть бокс
                   </button>
                 </div>
-                <a href="#" class="SelfStorage_orange">Нужна помощь?</a>
+                <a href="{% url 'faq' %}" class="SelfStorage_orange">Нужна помощь?</a>
               </div>
               {% endfor %} {% else %}
               <!-- Блок для случая, когда аренд нет -->
@@ -269,7 +269,7 @@
                   Арендовать бокс
                 </a>
               </div>
-              <a href="#" class="SelfStorage_orange">Нужна помощь?</a>
+              <a href="{% url 'faq' %}" class="SelfStorage_orange">Нужна помощь?</a>
               {% endif %}
             </div>
           </div>
@@ -313,19 +313,19 @@
       </div>
       <div class="row">
         <div class="col-6 col-md-4 d-flex flex-column">
-          <p><a href="#" class="link-dark text-decoration-none">Тарифы</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Рассчитать стоимость</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Тарифы</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Рассчитать стоимость</a></p>
           <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Арендовать бокс</a></p>
         </div>
         <div class="col-6 col-md-4 d-flex flex-column">
-          <p><a href="#" class="link-dark text-decoration-none">Правила хранения</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Адреса складов</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Отзывы</a></p>
+          <p><a href="{% url 'faq' %}" class="link-dark text-decoration-none">Правила хранения</a></p>
+          <p><a href="{% url 'boxes' %}" class="link-dark text-decoration-none">Адреса складов</a></p>
+          <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Отзывы</a></p>
         </div>
         <div class="col-6 col-md-4 d-flex flex-column">
           <p><a href="#" class="link-dark text-decoration-none">Политика конфиденциальности</a></p>
           <p><a href="#" class="link-dark text-decoration-none">Правовые документы</a></p>
-          <p><a href="#" class="link-dark text-decoration-none">Контакты</a></p>
+          <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Контакты</a></p>
         </div>
         <h6 class="SelfStorage_grey text-center mt-5">
           © 2022 SelfStorage. Использование материалов запрещено без письменного согласия
