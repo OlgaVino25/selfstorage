@@ -46,7 +46,9 @@ class Rent(models.Model):
     def save(self, *args, **kwargs):
         if not self.total_price:
             base_price = self.box.price_per_month
-            months = (self.end_date.year - self.start_date.year) * 12 + (self.end_date.month - self.start_date.month)
+            months = (self.end_date.year - self.start_date.year) * 12 + (
+                self.end_date.month - self.start_date.month
+            )
             if months <= 0:
                 months = 1
             total = base_price * months
@@ -58,3 +60,30 @@ class Rent(models.Model):
 
     def __str__(self):
         return f"Аренда #{self.id} – {self.user.email} – {self.box}"
+
+
+class StoredItem(models.Model):
+    CATEGORY_CHOICES = [
+        ("seasonal", "Сезонные вещи"),
+        ("other", "Другое"),
+    ]
+    rent = models.ForeignKey(
+        "Rent", on_delete=models.CASCADE, related_name="items", verbose_name="Аренда"
+    )
+    name = models.CharField(max_length=200, verbose_name="Название")
+    description = models.TextField(blank=True, verbose_name="Описание")
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Количество")
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="other",
+        verbose_name="Категория",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+
+    class Meta:
+        verbose_name = "Хранимая вещь"
+        verbose_name_plural = "Хранимые вещи"
+
+    def __str__(self):
+        return f"{self.name} (x{self.quantity})"

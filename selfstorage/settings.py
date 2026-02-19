@@ -21,6 +21,10 @@ SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", True)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
 
+LOGIN_URL = "/account/login/"
+LOGIN_REDIRECT_URL = "/rent/my-rent/"
+LOGOUT_REDIRECT_URL = "/"
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",

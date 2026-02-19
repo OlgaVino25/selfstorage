@@ -1,9 +1,16 @@
 from django.contrib import admin
-from .models import Rent
+from .models import Rent, StoredItem
+
+
+class StoredItemInline(admin.TabularInline):
+    model = StoredItem
+    extra = 1
+    fields = ("name", "description", "quantity", "category")
 
 
 @admin.register(Rent)
 class RentAdmin(admin.ModelAdmin):
+    inlines = [StoredItemInline]
     list_display = (
         "user",
         "box",
