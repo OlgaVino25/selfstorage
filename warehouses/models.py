@@ -73,6 +73,7 @@ class Box(models.Model):
 
     def save(self, *args, **kwargs):
         volume = self.length * self.width * self.height
+        self.area = self.length * self.width
         if self.warehouse:
             self.price_per_month = volume * self.warehouse.rate_per_cubic_meter
         else:

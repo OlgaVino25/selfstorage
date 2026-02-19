@@ -16,7 +16,7 @@ class BoxInline(admin.TabularInline):
         "price_per_month",
         "is_available",
     )
-    readonly_fields = ("price_per_month",)
+    readonly_fields = ("price_per_month", "area")
 
 
 @admin.register(Warehouse)

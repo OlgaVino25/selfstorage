@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import FAQCategory
 
 
 def index(request):
@@ -6,4 +7,5 @@ def index(request):
 
 
 def faq(request):
-    return render(request, "faq.html")
+    categories = FAQCategory.objects.prefetch_related("items").all()
+    return render(request, "faq.html", {"categories": categories})

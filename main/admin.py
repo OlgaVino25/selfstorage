@@ -1,6 +1,16 @@
 from django.contrib import admin
 from .models import FAQCategory, FAQItem, Review
 from django.utils.html import format_html
+from django import forms
+from tinymce.widgets import TinyMCE
+
+
+class FAQItemAdminForm(forms.ModelForm):
+    answer = forms.CharField(widget=TinyMCE(attrs={"cols": 80, "rows": 30}))
+
+    class Meta:
+        model = FAQItem
+        fields = "__all__"
 
 
 @admin.register(FAQCategory)
@@ -12,6 +22,7 @@ class FAQCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(FAQItem)
 class FAQItemAdmin(admin.ModelAdmin):
+    form = FAQItemAdminForm
     list_display = ("category", "question", "answer", "order")
     list_filter = ("category",)
     search_fields = (
