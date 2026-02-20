@@ -95,7 +95,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body d-flex justify-content-center align-items-center">
-            <form id="register-form" action="{% url 'register' %}" method="post" class="d-flex flex-column align-items-center" style="max-width: 420px">
+            <form
+              id="register-form"
+              action="{% url 'register' %}"
+              method="post"
+              class="d-flex flex-column align-items-center"
+              style="max-width: 420px"
+            >
               {% csrf_token %}
               <h1 class="modal-title text-center fw-bold mb-3">Регистрация</h1>
 
@@ -314,6 +320,62 @@
         </div>
       </div>
     </aside>
+
+    <!-- Modal for order success -->
+    <aside
+      class="modal fade"
+      id="OrderSuccessModal"
+      tabindex="-1"
+      aria-labelledby="orderSuccessModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="orderSuccessModalLabel">Заказ создан</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Ваш заказ успешно создан! Наш менеджер свяжется с вами в течение 10 минут.</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <aside
+      class="modal fade"
+      id="OrderOptionsModal"
+      tabindex="-1"
+      aria-labelledby="orderOptionsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="orderOptionsModalLabel">Оформление заказа</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="order-options-form">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="delivery" id="deliveryCheck" />
+                <label class="form-check-label" for="deliveryCheck">Нужна доставка</label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="measurements" id="measurementsCheck" />
+                <label class="form-check-label" for="measurementsCheck">Нужны замеры доставщика</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            <button type="button" class="btn btn-primary" id="confirm-order-btn">Подтвердить заказ</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
     <main class="container mt-header">
       <article class="row">
         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -565,6 +627,7 @@
                 href="#"
                 class="row text-decoration-none py-3 px-4 mt-3 SelfStorage__boxlink"
                 data-size="{{ box.size_category }}"
+                data-box-id="{{ box.id }}"
               >
                 <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
                   <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span>
@@ -670,8 +733,16 @@
           <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Отзывы</a></p>
         </div>
         <div class="col-6 col-md-4 d-flex flex-column">
-          <p><a href="{% static 'privacy_policy_template.pdf' %}" class="link-dark text-decoration-none">Политика конфиденциальности</a></p>
-          <p><a href="{% static 'privacy_policy_template.pdf' %}" class="link-dark text-decoration-none">Правовые документы</a></p>
+          <p>
+            <a href="{% static 'privacy_policy_template.pdf' %}" class="link-dark text-decoration-none">
+              Политика конфиденциальности
+            </a>
+          </p>
+          <p>
+            <a href="{% static 'privacy_policy_template.pdf' %}" class="link-dark text-decoration-none">
+              Правовые документы
+            </a>
+          </p>
           <p><a href="{% url 'index' %}" class="link-dark text-decoration-none">Контакты</a></p>
         </div>
         <h6 class="SelfStorage_grey text-center mt-5">
@@ -714,6 +785,68 @@
             });
           });
         });
+      })();
+    </script>
+    <script>
+      (function() {
+          var createOrderUrl = "{% url 'create_order' %}";
+          var csrfToken = "{{ csrf_token }}";
+          var isAuthenticated = {{ user.is_authenticated|lower }};
+
+          var boxLinks = document.querySelectorAll('a.SelfStorage__boxlink[data-box-id]');
+          var orderSuccessModal = new bootstrap.Modal(document.getElementById('OrderSuccessModal'));
+          var orderOptionsModal = new bootstrap.Modal(document.getElementById('OrderOptionsModal'));
+          var confirmOrderBtn = document.getElementById('confirm-order-btn');
+          var currentBoxId = null;
+
+          boxLinks.forEach(function(link) {
+              link.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  currentBoxId = this.dataset.boxId;
+
+                  if (isAuthenticated) {
+                      orderOptionsModal.show();
+                  } else {
+                      var regModal = new bootstrap.Modal(document.getElementById('RegModal'));
+                      regModal.show();
+                  }
+              });
+          });
+
+          confirmOrderBtn.addEventListener('click', function() {
+              if (!currentBoxId) return;
+
+              var delivery = document.getElementById('deliveryCheck').checked;
+              var measurements = document.getElementById('measurementsCheck').checked;
+
+              fetch(createOrderUrl, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: JSON.stringify({
+                      box_id: currentBoxId,
+                      delivery: delivery,
+                      measurements: measurements
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      orderOptionsModal.hide();
+                      orderSuccessModal.show();
+                      var link = document.querySelector('a.SelfStorage__boxlink[data-box-id="' + currentBoxId + '"]');
+                      if (link) link.style.display = 'none';
+                  } else {
+                      alert(data.error || 'Ошибка при создании заказа');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('Произошла ошибка');
+              });
+          });
       })();
     </script>
   </body>

@@ -24,6 +24,8 @@ class RentAdmin(admin.ModelAdmin):
         "total_price",
         "is_active",
         "created_at",
+        "delivery_required",
+        "measurements_required",
     )
     list_filter = (
         "start_date",

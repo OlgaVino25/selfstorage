@@ -37,6 +37,12 @@ class Rent(models.Model):
         blank=True,
         null=True,
     )
+    delivery_required = models.BooleanField(
+        default=False, verbose_name="Требуется доставка"
+    )
+    measurements_required = models.BooleanField(
+        default=False, verbose_name="Требуются замеры"
+    )
 
     class Meta:
         verbose_name = "Аренда"

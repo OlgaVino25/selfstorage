@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegistrationForm
+from django.contrib.auth import login
 
 
 def register(request):
@@ -8,7 +9,6 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            from django.contrib.auth import login
 
             login(request, user)
             messages.success(request, "Регистрация прошла успешно!")
