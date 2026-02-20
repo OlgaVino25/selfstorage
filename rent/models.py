@@ -44,22 +44,18 @@ class Rent(models.Model):
         ordering = ["-start_date"]
 
     def save(self, *args, **kwargs):
-        if not self.total_price:
-            base_price = self.box.price_per_month
-            months = (self.end_date.year - self.start_date.year) * 12 + (
-                self.end_date.month - self.start_date.month
-            )
-            if months <= 0:
-                months = 1
-            total = base_price * months
-            if self.promo_code and self.promo_code.is_valid():
-                discount = Decimal(self.promo_code.discount_percent) / Decimal(100)
-                total = total * (Decimal(1) - discount)
-            self.total_price = total
+        base_price = self.box.price_per_month
+        months = (self.end_date.year - self.start_date.year) * 12 + (
+            self.end_date.month - self.start_date.month
+        )
+        if months <= 0:
+            months = 1
+        total = base_price * months
+        if self.promo_code and self.promo_code.is_valid():
+            discount = Decimal(self.promo_code.discount_percent) / Decimal(100)
+            total = total * (Decimal(1) - discount)
+        self.total_price = total
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Аренда #{self.id} – {self.user.email} – {self.box}"
 
 
 class StoredItem(models.Model):
