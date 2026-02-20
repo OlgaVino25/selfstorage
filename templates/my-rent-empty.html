@@ -100,11 +100,156 @@
         </div>
       </nav>
     </header>
+
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %} {% endif %}
+
+    <aside class="modal fade" id="RegModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center">
+            <form
+              id="register-form"
+              action="{% url 'register' %}" method="post"
+              class="d-flex flex-column align-items-center"
+              style="max-width: 420px"
+            >
+              {% csrf_token %}
+              <h1 class="modal-title text-center fw-bold mb-3">Регистрация</h1>
+
+              <input
+                type="email"
+                name="email"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="E-mail"
+                value="{{ form.email.value|default:'' }}"
+              />
+              {% if form.email.errors %}
+              <div class="text-danger small mb-2">{{ form.email.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="phone"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Телефон"
+                value="{{ form.phone.value|default:'' }}"
+              />
+              {% if form.phone.errors %}
+              <div class="text-danger small mb-2">{{ form.phone.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="first_name"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Имя"
+                value="{{ form.first_name.value|default:'' }}"
+              />
+              {% if form.first_name.errors %}
+              <div class="text-danger small mb-2">{{ form.first_name.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="last_name"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Фамилия"
+                value="{{ form.last_name.value|default:'' }}"
+              />
+              {% if form.last_name.errors %}
+              <div class="text-danger small mb-2">{{ form.last_name.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="text"
+                name="address"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Адрес"
+                value="{{ form.address.value|default:'' }}"
+              />
+              {% if form.address.errors %}
+              <div class="text-danger small mb-2">{{ form.address.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="password"
+                name="password"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Пароль"
+              />
+              {% if form.password.errors %}
+              <div class="text-danger small mb-2">{{ form.password.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="password"
+                name="password_confirm"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Подтверждение пароля"
+              />
+              {% if form.password_confirm.errors %}
+              <div class="text-danger small mb-2">{{ form.password_confirm.errors.0 }}</div>
+              {% endif %}
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="consent" id="consent" required />
+                <label class="form-check-label fw-light SelfStorage_grey" for="consent">
+                  Я согласен на
+                  <a href="{% static 'privacy_policy_template.pdf' %}" target="_blank" class="SelfStorage_grey">
+                    обработку персональных данных
+                  </a>
+                </label>
+              </div>
+
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
+              {% endif %}
+
+              <button
+                type="submit"
+                class="btn border-8 py-3 px-5 mt-3 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange"
+              >
+                Зарегистрироваться
+              </button>
+
+              <span>
+                Уже зарегистрированы?
+                <a
+                  href="#"
+                  class="SelfStorage_orange"
+                  data-bs-toggle="modal"
+                  data-bs-target="#SignModal"
+                  data-bs-dismiss="modal"
+                >
+                  Войти в личный кабинет
+                </a>
+              </span>
+            </form>
+          </div>
+        </div>
+      </div>
+    </aside>
+
     <main class="container mt-header">
       <div class="row" role="tablist">
         <div class="col-lg-3 d-flex flex-column nav nav-pills">
           <button
-            class="ps-0 btn bg-white fs_24 shadow-none SelfStorage_orange SelfStorage_tab active"
+            class="ps-0 btn bg-white fs_24 shadow-none SelfStorage_orange SelfStorage_tab w-100 text-start active"
             id="LK-tab"
             data-bs-toggle="pill"
             data-bs-target="#LK"
@@ -116,7 +261,7 @@
             Личный кабинет
           </button>
           <button
-            class="ps-0 btn bg-white fs_24 shadow-none SelfStorage_grey SelfStorage_tab"
+            class="ps-0 btn bg-white fs_24 shadow-none SelfStorage_grey SelfStorage_tab w-100 text-start"
             id="Rent-tab"
             data-bs-toggle="pill"
             data-bs-target="#Rent"
@@ -127,10 +272,21 @@
           >
             Моя аренда
           </button>
-          <a href="{% url 'faq' %}" class="btn fs_24 shadow-none text-decoration-none SelfStorage_grey SelfStorage_tab">
+          <a
+            href="{% url 'faq' %}"
+            class="ps-0 btn bg-white fs_24 shadow-none text-decoration-none SelfStorage_grey SelfStorage_tab w-100 text-start"
+          >
             FAQ
           </a>
-          <a href="{% url 'logout' %}" class="btn fs_24 shadow-none text-decoration-none SelfStorage_grey SelfStorage_tab">Выйти</a>
+          <form method="post" action="{% url 'logout' %}" class="w-100 m-0 p-0">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="ps-0 btn bg-white fs_24 shadow-none text-decoration-none SelfStorage_grey SelfStorage_tab w-100 text-start"
+            >
+              Выйти
+            </button>
+          </form>
         </div>
         <div class="col-lg-9">
           <div class="card tab-content p-5">
@@ -206,11 +362,12 @@
                 Но вы можете арендовать свой первый бокс по привлекательной цене прямо сейчас
               </h4>
               <div>
-                <button
+                <a
+                  href="{% url 'boxes' %}"
                   class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3"
                 >
                   Арендовать бокс
-                </button>
+                </a>
               </div>
               <a href="{% url 'faq' %}" class="SelfStorage_orange">Нужна помощь?</a>
             </div>

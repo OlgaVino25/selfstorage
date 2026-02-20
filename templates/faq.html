@@ -66,6 +66,7 @@
               <a class="nav-link SelfStorage_black" href="{% url 'boxes' %}">Арендовать бокс</a>
             </li>
             <li class="nav-item d-flex align-items-center me-5">
+              
               <a href="#" class="me-2 mb-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -93,13 +94,168 @@
                     d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
                   />
                 </svg>
-                <span class="SelfStorage_green">Екатерина</span>
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'my_rent' %}" class="text-decoration-none">
+                  <span class="SelfStorage_green">{{ user.first_name|default:"Профиль" }}</span>
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="nav-link d-flex align-items-center p-0">
+                  <span class="SelfStorage_green">Войти</span>
+                </a>
+                {% endif %}
               </a>
             </li>
           </ul>
         </div>
       </nav>
     </header>
+
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %} {% endif %}
+
+    <aside class="modal fade" id="RegModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center">
+            <form
+              id="register-form"
+              action="{% url 'register' %}" method="post"
+              class="d-flex flex-column align-items-center"
+              style="max-width: 420px"
+            >
+              {% csrf_token %}
+              <h1 class="modal-title text-center fw-bold mb-3">Регистрация</h1>
+
+              <input
+                type="email"
+                name="email"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="E-mail"
+                value="{{ form.email.value|default:'' }}"
+              />
+              {% if form.email.errors %}
+              <div class="text-danger small mb-2">{{ form.email.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="phone"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Телефон"
+                value="{{ form.phone.value|default:'' }}"
+              />
+              {% if form.phone.errors %}
+              <div class="text-danger small mb-2">{{ form.phone.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="first_name"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Имя"
+                value="{{ form.first_name.value|default:'' }}"
+              />
+              {% if form.first_name.errors %}
+              <div class="text-danger small mb-2">{{ form.first_name.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="tel"
+                name="last_name"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Фамилия"
+                value="{{ form.last_name.value|default:'' }}"
+              />
+              {% if form.last_name.errors %}
+              <div class="text-danger small mb-2">{{ form.last_name.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="text"
+                name="address"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Адрес"
+                value="{{ form.address.value|default:'' }}"
+              />
+              {% if form.address.errors %}
+              <div class="text-danger small mb-2">{{ form.address.errors.0 }}</div>
+              {% endif %}
+              
+
+              <input
+                type="password"
+                name="password"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Пароль"
+              />
+              {% if form.password.errors %}
+              <div class="text-danger small mb-2">{{ form.password.errors.0 }}</div>
+              {% endif %}
+
+              <input
+                type="password"
+                name="password_confirm"
+                required
+                class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+                placeholder="Подтверждение пароля"
+              />
+              {% if form.password_confirm.errors %}
+              <div class="text-danger small mb-2">{{ form.password_confirm.errors.0 }}</div>
+              {% endif %}
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="consent" id="consent" required />
+                <label class="form-check-label fw-light SelfStorage_grey" for="consent">
+                  Я согласен на
+                  <a href="{% static 'privacy_policy_template.pdf' %}" target="_blank" class="SelfStorage_grey">
+                    обработку персональных данных
+                  </a>
+                </label>
+              </div>
+
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
+              {% endif %}
+
+              <button
+                type="submit"
+                class="btn border-8 py-3 px-5 mt-3 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange"
+              >
+                Зарегистрироваться
+              </button>
+
+              <span>
+                Уже зарегистрированы?
+                <a
+                  href="#"
+                  class="SelfStorage_orange"
+                  data-bs-toggle="modal"
+                  data-bs-target="#SignModal"
+                  data-bs-dismiss="modal"
+                >
+                  Войти в личный кабинет
+                </a>
+              </span>
+            </form>
+          </div>
+        </div>
+      </div>
+    </aside>
+
     <main class="container mt-header">
       <div class="row" role="tablist">
         <div class="col-lg-3 d-flex flex-column nav nav-pills">
@@ -178,7 +334,9 @@
           </form>
           <span class="text-white text-center fw-light">
             Нажимая на кнопку, вы подтверждаете свое
-            <a href="{% static 'privacy_policy_template.pdf' %}" target="_blank" class="text-white">согласие на обработку персональных данных</a>
+            <a href="{% static 'privacy_policy_template.pdf' %}" target="_blank" class="text-white">
+              согласие на обработку персональных данных
+            </a>
           </span>
         </div>
       </div>
