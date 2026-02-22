@@ -453,6 +453,33 @@
           </li>
           {% endfor %}
         </ul>
+        <div class="row my-5 align-items-center justify-content-center">
+          <div class="col-md-8">
+            <div class="d-flex flex-column flex-sm-row gap-3">
+              <input
+                type="text"
+                class="form-control form-control-lg fs_24 py-3"
+                id="globalPromoCode"
+                placeholder="Введите промокод для скидки"
+              />
+              <button
+                class="btn SelfStorage__bg_orange SelfStorage__btn2_orange text-white border-8 px-5 py-3 fs_24"
+                type="button"
+                id="applyGlobalPromoBtn"
+              >
+                Применить
+              </button>
+            </div>
+            <div id="globalPromoMessage" class="small text-muted mt-2"></div>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <span id="globalDiscountInfo" style="display: none" class="fs_3 fw-bold SelfStorage_green">
+              Скидка
+              <span id="globalDiscountPercent"></span>
+              %
+            </span>
+          </div>
+        </div>
       </article>
       <article class="pt-header" id="BOX">
         <div class="tab-content" id="boxes-content">
@@ -628,6 +655,7 @@
                 class="row text-decoration-none py-3 px-4 mt-3 SelfStorage__boxlink"
                 data-size="{{ box.size_category }}"
                 data-box-id="{{ box.id }}"
+                data-price="{{ box.price_per_month }}"
               >
                 <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
                   <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span>
@@ -790,19 +818,94 @@
     <script>
       (function() {
           var createOrderUrl = "{% url 'create_order' %}";
+          var checkPromoUrl = "{% url 'check_promo' %}";
           var csrfToken = "{{ csrf_token }}";
           var isAuthenticated = {{ user.is_authenticated|lower }};
 
-          var boxLinks = document.querySelectorAll('a.SelfStorage__boxlink[data-box-id]');
+          var globalDiscountPercent = 0;
+          var globalPromoCode = '';
+
           var orderSuccessModal = new bootstrap.Modal(document.getElementById('OrderSuccessModal'));
           var orderOptionsModal = new bootstrap.Modal(document.getElementById('OrderOptionsModal'));
           var confirmOrderBtn = document.getElementById('confirm-order-btn');
           var currentBoxId = null;
 
+          function updatePricesWithDiscount(percent) {
+              var activePane = document.querySelector('.tab-pane.active');
+              if (!activePane) return;
+              var boxes = activePane.querySelectorAll('a.SelfStorage__boxlink[data-price]');
+              boxes.forEach(function(link) {
+                  var originalPrice = parseFloat(link.dataset.price);
+                  var discountedPrice = originalPrice * (1 - percent/100);
+                  var priceSpan = link.querySelector('.btn');
+                  if (priceSpan) {
+                      priceSpan.textContent = 'от ' + discountedPrice.toFixed(2) + ' ₽';
+                  }
+              });
+          }
+
+          document.getElementById('applyGlobalPromoBtn').addEventListener('click', function() {
+              var promoInput = document.getElementById('globalPromoCode');
+              var promo = promoInput.value.trim();
+              if (!promo) {
+                  alert('Введите промокод');
+                  return;
+              }
+
+              fetch(checkPromoUrl, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: JSON.stringify({ promo_code: promo })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      globalDiscountPercent = data.discount_percent;
+                      globalPromoCode = promo;
+                      document.getElementById('globalDiscountPercent').textContent = globalDiscountPercent;
+                      document.getElementById('globalDiscountInfo').style.display = 'inline';
+                      document.getElementById('globalPromoMessage').innerHTML = '<span class="text-success">Промокод применён</span>';
+                      updatePricesWithDiscount(globalDiscountPercent);
+                  } else {
+                      alert(data.error || 'Ошибка');
+                      globalDiscountPercent = 0;
+                      globalPromoCode = '';
+                      document.getElementById('globalDiscountInfo').style.display = 'none';
+                      document.getElementById('globalPromoMessage').innerHTML = '<span class="text-danger">' + (data.error || 'Ошибка') + '</span>';
+                      updatePricesWithDiscount(0);
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('Произошла ошибка');
+              });
+          });
+
+          document.querySelectorAll('[data-bs-toggle="pill"]').forEach(function(tab) {
+              tab.addEventListener('shown.bs.tab', function() {
+                  updatePricesWithDiscount(globalDiscountPercent);
+              });
+          });
+
+          var boxLinks = document.querySelectorAll('a.SelfStorage__boxlink[data-box-id]');
           boxLinks.forEach(function(link) {
               link.addEventListener('click', function(e) {
                   e.preventDefault();
                   currentBoxId = this.dataset.boxId;
+                  var originalPrice = parseFloat(this.dataset.price);
+                  var discountedPrice = originalPrice * (1 - globalDiscountPercent/100);
+
+                  document.getElementById('originalPrice').textContent = originalPrice.toFixed(2);
+                  document.getElementById('finalPrice').textContent = discountedPrice.toFixed(2);
+                  if (globalDiscountPercent > 0) {
+                      document.getElementById('discountPercent').textContent = globalDiscountPercent;
+                      document.getElementById('discountInfo').style.display = 'inline';
+                  } else {
+                      document.getElementById('discountInfo').style.display = 'none';
+                  }
 
                   if (isAuthenticated) {
                       orderOptionsModal.show();
@@ -828,7 +931,8 @@
                   body: JSON.stringify({
                       box_id: currentBoxId,
                       delivery: delivery,
-                      measurements: measurements
+                      measurements: measurements,
+                      promo_code: globalPromoCode
                   })
               })
               .then(response => response.json())
