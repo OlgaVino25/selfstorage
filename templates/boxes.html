@@ -898,15 +898,6 @@
                   var originalPrice = parseFloat(this.dataset.price);
                   var discountedPrice = originalPrice * (1 - globalDiscountPercent/100);
 
-                  document.getElementById('originalPrice').textContent = originalPrice.toFixed(2);
-                  document.getElementById('finalPrice').textContent = discountedPrice.toFixed(2);
-                  if (globalDiscountPercent > 0) {
-                      document.getElementById('discountPercent').textContent = globalDiscountPercent;
-                      document.getElementById('discountInfo').style.display = 'inline';
-                  } else {
-                      document.getElementById('discountInfo').style.display = 'none';
-                  }
-
                   if (isAuthenticated) {
                       orderOptionsModal.show();
                   } else {
