@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     "tinymce",
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar", "livereload"]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -54,6 +57,12 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "livereload.middleware.LiveReloadScript",
 ]
+
+if DEBUG:
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        "livereload.middleware.LiveReloadScript",
+    ]
 
 ROOT_URLCONF = "selfstorage.urls"
 
