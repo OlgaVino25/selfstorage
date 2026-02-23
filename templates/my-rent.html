@@ -403,7 +403,7 @@
                 </div>
                 <div>
                   <button
-                    class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3"
+                    class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_orange SelfStorage__btn2_orange mb-3" onclick="document.getElementById('boxModal').style.display='flex'"
                   >
                     Открыть бокс
                   </button>
@@ -489,6 +489,26 @@
         </h6>
       </div>
     </footer>
+
+    <!-- Всплывающее окно -->
+    <div id="boxModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; font-family: sans-serif;">
+      <div style="background: white; padding: 25px; width: 320px; text-align: center; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+        <h3 style="margin-top: 0; color: #333;">Ваш QR-код</h3>
+
+        <img src="{% static 'img/qr-code.gif' %}" alt="QR-код" style="width: 200px; height: 200px;">
+
+        <p style="margin: 5px 0; color: #333;"><strong>Адрес:</strong> ул. Складская, 10</p>
+        <p style="font-size: 14px; color: #666; line-height: 1.4;">
+            Покажите код на складе. Вы можете забрать вещи (все или часть) или заказать доставку за 500₽.
+            Для доставки свяжитесь с администратором.
+        </p>
+
+        <button onclick="document.getElementById('boxModal').style.display='none'"
+                style="background: #ff5c00; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">
+            Закрыть
+        </button>
+      </div>
+    </div>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
