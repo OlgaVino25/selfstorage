@@ -21,3 +21,34 @@ class PromoCode(models.Model):
     class Meta:
         verbose_name = "Промокод"
         verbose_name_plural = "Промокоды"
+
+
+class ShortcutLink(models.Model):
+    """Модель для создания и учета коротких ссылок."""
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Название ссылки',
+    )
+    target_url = models.URLField(
+        verbose_name='Целевая ссылка',
+    )
+    short_url = models.URLField(
+        blank=True,
+        verbose_name='Короткая ссылка',
+    )
+    clicks = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Количество кликов',
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+
+    class Meta:
+        verbose_name = 'Короткая ссылка'
+        verbose_name_plural = 'Короткие ссылки'
+
+    def __str__(self):
+        return self.name

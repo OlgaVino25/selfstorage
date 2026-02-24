@@ -33,6 +33,10 @@ EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', None)
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', None)
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', None)
 
+SHORTIO_TOKEN = env.str('SHORTIO_TOKEN', None)
+SHORTIO_URL = env.str('SHORTIO_URL', None)
+SHORTIO_DOMAIN = env.str('SHORTIO_DOMAIN', None)
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
