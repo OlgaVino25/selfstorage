@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rent",
     "promotions",
     "tinymce",
+    "shortlinks",
 ]
 
 if DEBUG:

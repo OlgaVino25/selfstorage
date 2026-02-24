@@ -12,6 +12,7 @@ urlpatterns = [
     path("promotions/", include("promotions.urls")),
     path("rent/", include("rent.urls")),
     path("boxes/", include("warehouses.urls")),
+    path("go/", include("shortlinks.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
